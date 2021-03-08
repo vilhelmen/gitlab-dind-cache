@@ -21,7 +21,7 @@ Jobs operating on sensitive information should be siloed, or use the default doc
         network_mode = "dind-net"
     ```
 1. Stop the runner service
-1. Install the dind/wipe services/timers and runner override
+1. Install the dind/wipe services/timers and runner override to `/etc/systemd/system`
 3. Do a daemon-reload
 4. Restart gitlab-runner, it should now bring up and rely on the dind-cache service.
 
@@ -32,3 +32,4 @@ Dind cache will be wiped once a week and will cause all CI to halt during the wi
 ### TODO:
 1. Update wipe to optionally reformat a volume partition. So much faster than having docker delete files but, ya know, it's wiping a disk.
 1. Check it works on things besides Cent7
+1. Actually make install instructions
