@@ -1,0 +1,8 @@
+[Unit]
+Description=DIND Cleanup Job
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl stop dind-cache.service
+ExecStart=/usr/bin/docker volume prune -f
+ExecStart=/usr/bin/systemctl start dind-cache.service
