@@ -1,12 +1,15 @@
 [Unit]
 Description=DIND Cleanup Job
 
+# Conflict and shut them all off first
+Conflicts=gitlab-runner.service docker.service docker.socket var-lib-docker-volumes.mount
+After=gitlab-runner.service docker.service docker.socket var-lib-docker-volumes.mount
+
 [Service]
 Type=oneshot
-Conflicts=docker.service
-ExecStart=/usr/bin/systemctl stop docker.service docker.socket var-lib-docker-volumes.mount
 
 # VERIFY VOLUME MOUNT NAME AND FS TYPE
 ExecStart=/usr/bin/sh -c '/sbin/mkfs.xfs -f $(/usr/bin/systemctl show --property=What var-lib-docker-volumes.mount | /bin/cut -d= -f 2)'
 
-ExecStart=/usr/bin/systemctl start var-lib-docker-volumes.mount docker.socket docker.service 
+# ... we can't ask it to restart them, or optionally restart them if they weren't on before
+ExecStart=/usr/bin/systemctl start var-lib-docker-volumes.mount docker.socket docker.service gitlab-runner.service
