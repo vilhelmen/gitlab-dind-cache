@@ -51,4 +51,4 @@ Dind cache will be wiped once a week to help keep the cache from growing infinit
 
 # Bonus:
 
-I threw together a timer/service to run the cache cleanup script, copy the `runner-clean` files to `/etc/systemd/system/` and enable and run them.
+I threw together a timer/service to run the cache cleanup script, copy the `runner-clean` files to `/etc/systemd/system/`, enable the timer, and then start both.
