@@ -1,16 +1,20 @@
 [Unit]
 Description=DIND Maintenance
 
-# Systemd has gotten better but it can still be graph chaos at times
-# This combines the wipe task with the docker/gitlab services in a "cleaner", less selinux-angering way
 # https://unix.stackexchange.com/a/362883
-# we make both units wanted by this, so systemd analyzes the dependency/conflict graph and what is currently enabled
+# Should work but doesn't
+# So we either need to stick a command in crontab to run both, or call systemctl from here and make selinux mad
 
-Wants=dind-wipe.service dind-cache.service
-
-# So, IN THEORY, this should trigger wipe, which shuts it all off, and then the cache, which turns it all back on
-
+Requires=dind-wipe.service
+After=dind-wipe.service
 
 [Service]
 Type=oneshot
 
+# Gotta have a start or a stop
+ExecStart=/bin/true
+
+# Just guess which were on and turn them on
+ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled docker.service && bin/systemctl start docker.service'
+ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled dind-cache.service && bin/systemctl start dind-cache.service'
+ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled gitlab-runner.service && bin/systemctl start gitlab-runner.service'

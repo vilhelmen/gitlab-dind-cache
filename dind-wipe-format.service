@@ -1,10 +1,10 @@
 [Unit]
 Description=DIND Cache Format
 
-# Conflict directly with the mount to trigger a full shutdown
-Conflicts=var-lib-docker-volumes.mount
+# Conflict directly with the mount and docker
+Conflicts=docker.socket docker.service var-lib-docker-volumes.mount
 # Docs say before/after is the same when used with conflicts
-After=var-lib-docker-volumes.mount
+After=docker.socket docker.service var-lib-docker-volumes.mount
 
 [Service]
 Type=oneshot
