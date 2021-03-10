@@ -24,7 +24,7 @@ Jobs operating on sensitive information should be siloed, or use the default doc
 	- You may run into an SELinux issue with init_t calling system start because maintenence attempts to restart the cache and runner services if they are enabled.
 1. Register a new runner for the cached dind service.
 	- You'll probably want to tag it appropriately and limit it to tags only.
-1. Edit gitlab config file, add following bits to the runner:
+1. Edit the gitlab runner config file (`/etc/gitlab-runner/config.toml`), and add following bits to the runner:
     ```
     [[runners]]
       environment = ["DOCKER_HOST=tcp://docker:2376", "DOCKER_DRIVER=overlay2", "DOCKER_CERT_PATH=/certs/client", "DOCKER_TLS_VERIFY=1"]
