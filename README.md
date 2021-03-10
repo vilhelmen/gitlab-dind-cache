@@ -20,7 +20,8 @@ Jobs operating on sensitive information should be siloed, or use the default doc
 1. Copy `gitlab-runner.service.d`, `dind-maintenance.service`, `dind-maintenance.timer` to `/etc/systemd/system` 
 1. Run `systemctl daemon-reload` to load the new services.
 1. Enable the services and timer with `systemctl enable dind-cache.service dind-maintenance.timer`
-1. Enable the timer and restart everything by triggering a wipe with `systemctl start dind-maintenance.timer dind-maintenence.service`
+1. Enable the timer and restart everything by triggering a wipe with `systemctl start dind-maintenance.timer dind-maintenance.service`
+	- You may run into an SELinux issue with init_t calling system start because maintenence attempts to restart the cache and runner services if they are enabled.
 1. Register a new runner for the cached dind service.
 	- You'll probably want to tag it appropriately and limit it to tags only.
 1. Edit gitlab config file, add following bits to the runner:
@@ -32,12 +33,18 @@ Jobs operating on sensitive information should be siloed, or use the default doc
         network_mode = "dind-net"
         volumes = ["dind_client_certs:/certs/client:ro"]
     ```
-1. The runner service should detect the config change and reload
+1. The runner service should detect the config change, reload, and be good to go!
 
 
-Dind cache will be wiped once a week to help keep the cache from groing out of control and will cause all CI jobs on the server to halt during the wipe.
+Dind cache will be wiped once a week to help keep the cache from growing infinitely and will cause all CI jobs on the server to halt during the wipe.
 
-**NOTE:** The service override adds a 30 minute shutdown timeout to avoid interrupting jobs for maintenence, this can also negatively impact shutdown times on busy servers.
+**NOTE:** The service override adds a 20 minute shutdown timeout to avoid interrupting jobs for maintenence, this can also negatively impact shutdown times on busy servers.
 
-# TODO:
-- Change prune to id the dind volumes instead of a blanket wipe
+
+# ISSUES:
+
+- Because of how DIND does DNS, the containers started by DIND will use Google DNS by default (8.8.8.8, 8.8.4.4). To use your own DNS settings inside the containers started by DIND, you need to append `--dns` flags to the end of the ExecStart in your `dind-cache.service` like so:
+
+  `ExecStart=... docker:dind --storage-driver=overlay2  --bip=10.10.0.1/24 --dns 192.168.1.1`
+  
+  DNS search settings are (somehow) propogated correctly from the host.

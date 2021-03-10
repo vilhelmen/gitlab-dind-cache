@@ -15,6 +15,5 @@ Type=oneshot
 ExecStart=/bin/true
 
 # Just guess which were on and turn them on
-ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled docker.service && /bin/systemctl start docker.service'
 ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled dind-cache.service && /bin/systemctl start dind-cache.service'
 ExecStopPost=/usr/bin/sh -c '/bin/systemctl is-enabled gitlab-runner.service && /bin/systemctl start gitlab-runner.service'
