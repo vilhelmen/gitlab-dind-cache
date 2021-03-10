@@ -31,7 +31,7 @@ Jobs operating on sensitive information should be siloed, or use the default doc
       [runners.docker]
         privileged = true
         network_mode = "dind-net"
-        volumes = ["dind_client_certs:/certs/client:ro"]
+        volumes = ["/cache", dind_client_certs:/certs/client:ro"]
     ```
 1. The runner service should detect the config change, reload, and be good to go!
 
