@@ -48,3 +48,7 @@ Dind cache will be wiped once a week to help keep the cache from growing infinit
   `ExecStart=... docker:dind --storage-driver=overlay2  --bip=10.10.0.1/24 --dns 192.168.1.1`
   
   DNS search settings are (somehow) propogated correctly from the host.
+
+# Bonus:
+
+I threw together a timer/service to run the cache cleanup script, copy the `runner-clean` files to `/etc/systemd/system/` and enable and run them.

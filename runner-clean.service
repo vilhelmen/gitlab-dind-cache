@@ -1,0 +1,8 @@
+[Unit]
+Description=Gitlab Runner Cache Clean
+
+[Service]
+Type=oneshot
+
+ExecStart=/usr/share/gitlab-runner/clear-docker-cache
+
