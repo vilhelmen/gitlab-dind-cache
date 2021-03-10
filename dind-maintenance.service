@@ -1,0 +1,16 @@
+[Unit]
+Description=DIND Maintenance
+
+# Systemd has gotten better but it can still be graph chaos at times
+# This combines the wipe task with the docker/gitlab services in a "cleaner", less selinux-angering way
+# https://unix.stackexchange.com/a/362883
+# we make both units wanted by this, so systemd analyzes the dependency/conflict graph and what is currently enabled
+
+Wants=dind-wipe.service dind-cache.service
+
+# So, IN THEORY, this should trigger wipe, which shuts it all off, and then the cache, which turns it all back on
+
+
+[Service]
+Type=oneshot
+

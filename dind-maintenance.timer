@@ -1,5 +1,5 @@
 [Unit]
-Description=DIND Cleanup Timer
+Description=DIND Maintenance Timer
 
 [Timer]
 OnCalendar=weekly
