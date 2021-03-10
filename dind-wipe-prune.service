@@ -6,4 +6,4 @@ After=dind-cache.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/docker volume prune -f
+ExecStart=/usr/bin/docker volume rm -f dind_vld

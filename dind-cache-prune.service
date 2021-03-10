@@ -1,0 +1,22 @@
+[Unit]
+Description=DIND master cache service
+
+Requires=docker.service
+BindsTo=docker.service
+After=docker.service
+
+
+[Service]
+Type=simple
+ExecStartPre=/usr/bin/sh -c '/bin/docker network inspect dind-net > /dev/null || /bin/docker network create dind-net'
+
+ExecStart=/usr/bin/docker run --rm --network dind-net --privileged --name dind-cache --network-alias docker -v dind_client_certs:/certs/client -e DOCKER_TLS_CERTDIR=/certs -v dind_vld:/var/lib/docker docker:dind --storage-driver=overlay2 --bip=10.10.0.1/24
+
+# Cycle certs as often as possible, they expire. Container boot seems to also trigger regen, but let's do both
+ExecStopPost=/usr/bin/docker volume rm -f dind_client_certs
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

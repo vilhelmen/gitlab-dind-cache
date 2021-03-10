@@ -1,14 +1,14 @@
 [Unit]
 Description=DIND Cache Format
 
-# Conflict directly with the mount and docker
-Conflicts=docker.socket docker.service var-lib-docker-volumes.mount
+# Conflict directly with the mount and service
+Conflicts=dind-cache.service opt-dind_vld.mount
 # Docs say before/after is the same when used with conflicts
-After=docker.socket docker.service var-lib-docker-volumes.mount
+After=dind-cache.service opt-dind_vld.mount
 
 [Service]
 Type=oneshot
 
 # VERIFY VOLUME MOUNT PATH AND FS TYPE
-# Also, UUID apparently changes after a format, so that WILL NOT work here (sorry)
-ExecStart=/usr/bin/sh -c '/sbin/mkfs.xfs -f $(/usr/bin/systemctl show --property=What var-lib-docker-volumes.mount | /bin/cut -d= -f 2)'
+# Also, UUID apparently changes after a format, so by uuid WILL NOT work here (sorry)
+ExecStart=/usr/bin/sh -c '/sbin/mkfs.xfs -f $(/usr/bin/systemctl show --property=What opt-dind_vld.mount | /bin/cut -d= -f 2)'
